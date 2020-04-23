@@ -101,6 +101,7 @@ open class MarklightTextStorage: NSTextStorage, MarklightStyleApplier {
     override open func processEditing() {
 
         self.isBusyProcessing = true
+        
         defer { self.isBusyProcessing = false }
 
         let processingResult = marklightTextProcessor.processEditing(
@@ -120,6 +121,8 @@ open class MarklightTextStorage: NSTextStorage, MarklightStyleApplier {
     public func resetMarklightTextAttributes(textSize: CGFloat, range: NSRange) {
         // Use `imp` directly instead of `self` to avoid changing the edited range
         // after attribute fixing, affecting the insertion point on macOS.
+        imp.addAttributes([.backgroundColor : UIColor.clear], range: range)
+        imp.removeAttribute(.link, range: range)
         imp.removeAttribute(NSAttributedString.Key.foregroundColor, range: range)
         imp.addAttribute(NSAttributedString.Key.font, value: MarklightFont.systemFont(ofSize: textSize), range: range)
         imp.addAttribute(NSAttributedString.Key.paragraphStyle, value: NSParagraphStyle(), range: range)
@@ -250,7 +253,9 @@ open class MarklightTextStorage: NSTextStorage, MarklightStyleApplier {
 
     fileprivate func invalidateTextSizeForWholeRange() {
         let wholeRange = NSMakeRange(0, (self.string as NSString).length)
+        
         self.invalidateAttributes(in: wholeRange)
+        
         for layoutManager in self.layoutManagers {
             layoutManager.invalidateDisplay(forCharacterRange: wholeRange)
         }
