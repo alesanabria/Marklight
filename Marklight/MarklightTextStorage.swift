@@ -122,9 +122,15 @@ open class MarklightTextStorage: NSTextStorage, MarklightStyleApplier {
         // Use `imp` directly instead of `self` to avoid changing the edited range
         // after attribute fixing, affecting the insertion point on macOS.
         imp.addAttributes([.backgroundColor : UIColor.clear], range: range)
-        imp.removeAttribute(.link, range: range)
-        imp.removeAttribute(NSAttributedString.Key.foregroundColor, range: range)
+
+		imp.removeAttribute(.link, range: range)
+
+		imp.removeAttribute(NSAttributedString.Key.foregroundColor, range: range)
+
+		imp.addAttributes([.foregroundColor: UIColor(red: 0.94, green: 0.95, blue: 0.97, alpha: 1.00)], range: range)
+
         imp.addAttribute(NSAttributedString.Key.font, value: MarklightFont.systemFont(ofSize: textSize), range: range)
+
         imp.addAttribute(NSAttributedString.Key.paragraphStyle, value: NSParagraphStyle(), range: range)
     }
 
